@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
-import Dashboard from './components/pages/Dashboard';
+import Dashboard from '../components/pages/Dashboard';
 import Category from './components/pages/Category';
 import SubCategory from './components/pages/SubCategory';
 import Vendor from './components/pages/Vendor';
