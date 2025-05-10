@@ -12,8 +12,9 @@ const Sidebar = () => {
       <aside id="sidebar-wrapper">
         <div className="sidebar-brand">
           <Link to="/Dashboard">
-            <img alt="logo" src="/assets/img/logo.png" className="header-logo" />
-            <span className="logo-name"> Admin</span>
+            <span className="logo-name font-16">Natural </span>
+            <img alt="logo" src="/assets/img/natural_farmz_logo.png" style={{ borderRadius:'100px', width: '50px', height:'50px' }} className="header-logo" />
+            <span className="logo-name font-16"> Farmz</span>
           </Link>
         </div>
         <ul className="sidebar-menu">
