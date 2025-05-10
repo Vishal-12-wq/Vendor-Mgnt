@@ -124,7 +124,15 @@ const vendorSchema = new mongoose.Schema({
       message: "Status must be either (1: Active) or (0: Inactive)."
     },
     default: "0"
+  },
+
+   otp: {
+    type: String,
+   },
+  otpExpiresAt: {
+    type: Date
   }
+
 }, {
   timestamps: true
 });

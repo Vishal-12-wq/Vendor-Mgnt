@@ -160,3 +160,75 @@ exports.changeStatus = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+exports.sendOtpToMobile = async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone) {
+    return res.status(400).json({ success: false, message: "Phone number is required." });
+  }
+
+  try {
+    const vendor = await Vendor.findOne({ owner_phone: phone });
+
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: "Vendor with this phone number not found." });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Save OTP and expiry (10 min)
+    vendor.otp = otp;
+    vendor.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await vendor.save();
+
+    // In production, send via SMS here (Twilio, Fast2SMS, etc.)
+    console.log(`OTP for ${phone}: ${otp}`);
+
+    return res.status(200).json({ success: true, message: "OTP sent successfully." });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+
+
+exports.verifyOtp = async (req, res) => {
+  const { phone, otp } = req.body;
+
+  if (!phone || !otp) {
+    return res.status(400).json({ success: false, message: "Phone and OTP are required." });
+  }
+
+  try {
+    const vendor = await Vendor.findOne({ owner_phone: phone });
+
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: "Vendor not found." });
+    }
+
+    // Check OTP match
+    if (vendor.otp !== otp) {
+      return res.status(401).json({ success: false, message: "Invalid OTP." });
+    }
+
+    // Check if OTP is expired
+    if (vendor.otpExpiresAt < new Date()) {
+      return res.status(410).json({ success: false, message: "OTP has expired." });
+    }
+
+    // Optional: Clear OTP after successful login
+    vendor.otp = null;
+    vendor.otpExpiresAt = null;
+    await vendor.save();
+
+    // TODO: You can generate a token here if using JWT
+    return res.status(200).json({ success: true, message: "OTP verified. Login successful." });
+  } catch (error) {
+    console.error("Verify OTP Error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
