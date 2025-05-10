@@ -1,6 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from '../../api/axiosConfig';
+import { Link, useLocation  } from 'react-router-dom';
 
 const Dashboard = () => {
+
+const [categoryCount, setCategoryCount] = useState(0);
+const [subCategoryCount, setSubCategoryCount] = useState(0);
+const [productCount, setProductCount] = useState(0);
+const [vendorCount, setVendorCount] = useState(0);
+
+// Fetch and count categories
+const fetchCategoryCount = async () => {
+  try {
+    const res = await axios.get('/categories');
+    setCategoryCount(res.data.data.length); // directly set count
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// Fetch and count subcategories
+const fetchSubCategories = async () => {
+  try {
+    const res = await axios.get('/subcategories');
+    setSubCategoryCount(res.data.data.length); // Only store the count
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+const fetchProducts = async () => {
+  try {
+    const res = await axios.get('/products');
+    setProductCount(res.data.data.length); // just store the count
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+const fetchvendor = async () => {
+  try {
+    const res = await axios.get('/products');
+    setVendorCount(res.data.data.length); // just store the count
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchCategoryCount();
+  fetchSubCategories();
+   fetchProducts();
+   fetchvendor();
+}, []);
+
+
+
+
+
+
+  
   return (
     
     <>
@@ -12,9 +73,9 @@ const Dashboard = () => {
                 <div className="row ">
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                     <div className="card-content">
-                      <h5 className="font-15">New Booking</h5>
-                      <h2 className="mb-3 font-18">258</h2>
-                      <p className="mb-0"><span className="col-green">10%</span> Increase</p>
+                      <h5 className="font-15">Category</h5>
+                      <h2 className="mb-3 font-18">{categoryCount}</h2>
+                      <p className="mb-0"><Link to='/Category' className="col-green">View</Link></p>
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -34,9 +95,9 @@ const Dashboard = () => {
                 <div className="row ">
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                     <div className="card-content">
-                      <h5 className="font-15"> Customers</h5>
-                      <h2 className="mb-3 font-18">1,287</h2>
-                      <p className="mb-0"><span className="col-orange">09%</span> Decrease</p>
+                      <h5 className="font-15"> Sub Category</h5>
+                      <h2 className="mb-3 font-18">{subCategoryCount}</h2>
+                      <p className="mb-0"><Link to="/SubCategory" className="col-green">View</Link></p>
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -56,10 +117,9 @@ const Dashboard = () => {
                 <div className="row ">
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                     <div className="card-content">
-                      <h5 className="font-15">New Project</h5>
-                      <h2 className="mb-3 font-18">128</h2>
-                      <p className="mb-0"><span className="col-green">18%</span>
-                        Increase</p>
+                      <h5 className="font-15">Products</h5>
+                      <h2 className="mb-3 font-18">{productCount}</h2>
+                      <p className="mb-0"><Link to="/Product" className="col-green">View</Link></p>
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -79,9 +139,9 @@ const Dashboard = () => {
                 <div className="row ">
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                     <div className="card-content">
-                      <h5 className="font-15">Revenue</h5>
-                      <h2 className="mb-3 font-18">$48,697</h2>
-                      <p className="mb-0"><span className="col-green">42%</span> Increase</p>
+                      <h5 className="font-15">Vendors</h5>
+                      <h2 className="mb-3 font-18">{vendorCount}</h2>
+                      <p className="mb-0"><Link to="/Vendor" className="col-green">View</Link></p>
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
