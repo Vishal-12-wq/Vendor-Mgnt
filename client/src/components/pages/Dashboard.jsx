@@ -13,9 +13,9 @@ const [vendorCount, setVendorCount] = useState(0);
 const fetchCategoryCount = async () => {
   try {
     const res = await axios.get('/categories');
-    setCategoryCount(res.data.data.length); // directly set count
+    setCategoryCount(res.data.data.length);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching categories:', err);
   }
 };
 
@@ -23,38 +23,39 @@ const fetchCategoryCount = async () => {
 const fetchSubCategories = async () => {
   try {
     const res = await axios.get('/subcategories');
-    setSubCategoryCount(res.data.data.length); // Only store the count
+    setSubCategoryCount(res.data.data.length);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching subcategories:', err);
   }
 };
 
-
+// Fetch and count products
 const fetchProducts = async () => {
   try {
     const res = await axios.get('/products');
-    setProductCount(res.data.data.length); // just store the count
+    setProductCount(res.data.data.length);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching products:', err);
   }
 };
 
-
-const fetchvendor = async () => {
+// Fetch and count vendors
+const fetchVendorCount = async () => {
   try {
-    const res = await axios.get('/products');
-    setVendorCount(res.data.data.length); // just store the count
+    const res = await axios.get('/vendors'); // Correct endpoint here
+    setVendorCount(res.data.data.length);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching vendors:', err);
   }
 };
 
 useEffect(() => {
   fetchCategoryCount();
   fetchSubCategories();
-   fetchProducts();
-   fetchvendor();
+  fetchProducts();
+  fetchVendorCount();
 }, []);
+
 
 
 
