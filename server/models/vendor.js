@@ -4,49 +4,49 @@ const vendorSchema = new mongoose.Schema({
   // Owner Details
   owner_full_name: {
     type: String,
-    required: [true, "Owner full name is required."],
+    // required: [true, "Owner full name is required."],
     trim: true
   },
   owner_phone: {
     type: String,
-    required: [true, "Owner phone number is required."],
+    // required: [true, "Owner phone number is required."],
     trim: true
   },
   owner_email: {
     type: String,
-    required: [true, "Owner email is required."],
+    // required: [true, "Owner email is required."],
     trim: true
   },
 
   // Company Details
   company_name: {
     type: String,
-    required: [true, "Company name is required."],
+    // required: [true, "Company name is required."],
     trim: true
   },
   company_pan: {
     type: String,
-    required: [true, "PAN of the company is required."],
+    // required: [true, "PAN of the company is required."],
     trim: true
   },
   business_type: {
     type: String,
-    required: [true, "Business type is required."],
+    // required: [true, "Business type is required."],
     trim: true
   },
   company_type: {
     type: String,
-    required: [true, "Company type is required."],
+    // required: [true, "Company type is required."],
     trim: true
   },
   business_address: {
     type: String,
-    required: [true, "Registered business address is required."],
+    // required: [true, "Registered business address is required."],
     trim: true
   },
   business_email: {
     type: String,
-    required: [true, "Business email is required."],
+    // required: [true, "Business email is required."],
     trim: true
   },
   about_company: {
@@ -123,8 +123,20 @@ const vendorSchema = new mongoose.Schema({
       values: ["1", "0"],
       message: "Status must be either (1: Active) or (0: Inactive)."
     },
-    default: "0"
+    default: '0'
   },
+
+
+    // Status
+  verified_status: {
+    type: String,
+    enum: {
+      values: ["1", "0"],
+      message: "Status must be either (1: Active) or (0: Inactive)."
+    },
+    default: '0'
+  },
+
 
    otp: {
     type: String,

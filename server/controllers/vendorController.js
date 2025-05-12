@@ -1,49 +1,48 @@
 const Vendor = require("../models/vendor");
-
+const jwt = require("jsonwebtoken");
 // Create Vendor
 exports.createVendor = async (req, res) => {
   try {
+    const { owner_phone } = req.body;
     const files = req.files || {};
-    const {
-      owner_full_name, owner_phone, owner_email,
-      company_name, company_pan, business_type, company_type, business_address,
-      business_email, about_company, pickup_location, fssai_type, fssai_number,
-      fssai_validity, organic_certificate_validity,
-      bank_name, account_number, ifsc_code, branch_address,
-      gstin, gst_address, gst_state, status
-    } = req.body;
 
-    const vendor = new Vendor({
-      owner_full_name,
-      owner_phone,
-      owner_email,
-      company_name,
-      company_pan,
-      business_type,
-      company_type,
-      business_address,
-      business_email,
-      about_company,
-      logo: files.logo?.[0]?.filename || '',
-      organic_certificate: files.organic_certificate?.[0]?.filename || '',
-      organic_certificate_validity,
-      signature: files.signature?.[0]?.filename || '',
-      pickup_location,
-      fssai_type,
-      fssai_certificate: files.fssai_certificate?.[0]?.filename || '',
-      fssai_number,
-      fssai_validity,
-      bank_name,
-      account_number,
-      ifsc_code,
-      branch_address,
-      gstin,
-      gst_address,
-      gst_state,
-      status,
-    });
+    const vendor = await Vendor.findOne({ owner_phone });
+
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: "Vendor not found or OTP not verified." });
+    }
+
+    // Update vendor with full details
+    vendor.owner_full_name = req.body.owner_full_name;
+    vendor.owner_email = req.body.owner_email;
+    vendor.company_name = req.body.company_name;
+    vendor.company_pan = req.body.company_pan;
+    vendor.business_type = req.body.business_type;
+    vendor.company_type = req.body.company_type;
+    vendor.business_address = req.body.business_address;
+    vendor.business_email = req.body.business_email;
+    vendor.about_company = req.body.about_company;
+    vendor.pickup_location = req.body.pickup_location;
+    vendor.fssai_type = req.body.fssai_type;
+    vendor.fssai_number = req.body.fssai_number;
+    vendor.fssai_validity = req.body.fssai_validity;
+    vendor.organic_certificate_validity = req.body.organic_certificate_validity;
+    vendor.bank_name = req.body.bank_name;
+    vendor.account_number = req.body.account_number;
+    vendor.ifsc_code = req.body.ifsc_code;
+    vendor.branch_address = req.body.branch_address;
+    vendor.gstin = req.body.gstin;
+    vendor.gst_address = req.body.gst_address;
+    vendor.gst_state = req.body.gst_state;
+    vendor.status = req.body.status || "1"; // default active
+
+    if (files.logo) vendor.logo = files.logo[0].filename;
+    if (files.organic_certificate) vendor.organic_certificate = files.organic_certificate[0].filename;
+    if (files.signature) vendor.signature = files.signature[0].filename;
+    if (files.fssai_certificate) vendor.fssai_certificate = files.fssai_certificate[0].filename;
 
     await vendor.save();
+
     res.status(201).json({ success: true, data: vendor });
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -162,7 +161,7 @@ exports.changeStatus = async (req, res) => {
 };
 
 
-exports.sendOtpToMobile = async (req, res) => {
+exports.sendRegistrationOtp = async (req, res) => {
   const { phone } = req.body;
 
   if (!phone) {
@@ -170,37 +169,45 @@ exports.sendOtpToMobile = async (req, res) => {
   }
 
   try {
-    const vendor = await Vendor.findOne({ owner_phone: phone });
+    let vendor = await Vendor.findOne({ owner_phone: phone });
 
-    if (!vendor) {
-      return res.status(404).json({ success: false, message: "Vendor with this phone number not found." });
+    if (vendor) {
+      // If vendor exists but status is empty (i.e., not fully registered), allow OTP
+      // if (!vendor.status || vendor.status.trim() === "") {
+        vendor.otp = "1234";
+        vendor.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        await vendor.save({ validateBeforeSave: false });
+
+        return res.status(200).json({ success: true, message: "OTP re-sent to phone." });
+      // } 
+      // else {
+      //   return res.status(400).json({ success: false, message: "Vendor already registered." });
+      // }
     }
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // New temporary vendor
+    vendor = new Vendor({
+      owner_phone: phone,
+      otp: "1234",
+      otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
 
-    // Save OTP and expiry (10 min)
-    vendor.otp = otp;
-    vendor.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
-    await vendor.save();
+    await vendor.save({ validateBeforeSave: false });
 
-    // In production, send via SMS here (Twilio, Fast2SMS, etc.)
-    console.log(`OTP for ${phone}: ${otp}`);
-
-    return res.status(200).json({ success: true, message: "OTP sent successfully." });
+    return res.status(200).json({ success: true, message: "OTP sent successfully to phone." });
   } catch (error) {
     console.error("Send OTP Error:", error);
-    return res.status(500).json({ success: false, message: "Internal server error." });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 
 
-exports.verifyOtp = async (req, res) => {
+exports.verifyRegistrationOtp = async (req, res) => {
   const { phone, otp } = req.body;
 
   if (!phone || !otp) {
-    return res.status(400).json({ success: false, message: "Phone and OTP are required." });
+    return res.status(400).json({ success: false, message: "Phone and OTP required." });
   }
 
   try {
@@ -210,25 +217,35 @@ exports.verifyOtp = async (req, res) => {
       return res.status(404).json({ success: false, message: "Vendor not found." });
     }
 
-    // Check OTP match
     if (vendor.otp !== otp) {
-      return res.status(401).json({ success: false, message: "Invalid OTP." });
+      return res.status(401).json({ success: false, message: "Incorrect OTP." });
     }
 
-    // Check if OTP is expired
     if (vendor.otpExpiresAt < new Date()) {
-      return res.status(410).json({ success: false, message: "OTP has expired." });
+      return res.status(410).json({ success: false, message: "OTP expired." });
     }
 
-    // Optional: Clear OTP after successful login
+    // Clear OTP after verification
     vendor.otp = null;
     vendor.otpExpiresAt = null;
     await vendor.save();
 
-    // TODO: You can generate a token here if using JWT
-    return res.status(200).json({ success: true, message: "OTP verified. Login successful." });
+    // Generate JWT Token
+    const token = jwt.sign(
+      { vendorId: vendor._id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified. Proceed to registration.",
+      status: vendor.status,
+      token: token,
+    });
   } catch (error) {
-    console.error("Verify OTP Error:", error);
-    return res.status(500).json({ success: false, message: "Internal server error." });
+    console.error("Verify OTP Error:", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+

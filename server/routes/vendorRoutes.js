@@ -10,8 +10,8 @@ const {
   deleteVendor,
   bulkDeleteVendors,
   changeStatus,
-  sendOtpToMobile ,
-  verifyOtp 
+  sendRegistrationOtp ,
+  verifyRegistrationOtp 
 } = require("../controllers/vendorController");
 
 // Multer Storage Configuration
@@ -44,6 +44,6 @@ router.put("/:id/status", changeStatus); // Status update only
 router.put("/:id", multiUpload, updateVendor);
 router.delete("/:id", deleteVendor);
 router.delete("/bulkvendors", bulkDeleteVendors);
-router.post("/send-otp", sendOtpToMobile);
-router.post("/verify-otp", verifyOtp);
+router.post("/register/send-otp", sendRegistrationOtp);
+router.post("/register/verify-otp", verifyRegistrationOtp);
 module.exports = router;
