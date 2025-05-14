@@ -44,6 +44,6 @@ router.put("/:id/status", changeStatus); // Status update only
 router.put("/:id", multiUpload, updateVendor);
 router.delete("/:id", deleteVendor);
 router.delete("/bulkvendors", bulkDeleteVendors);
-router.post("/register/send-otp", sendRegistrationOtp);
-router.post("/register/verify-otp", verifyRegistrationOtp);
+router.post("/register/send-otp", upload.none(), sendRegistrationOtp);
+router.post("/register/verify-otp", upload.none() ,verifyRegistrationOtp);
 module.exports = router;
