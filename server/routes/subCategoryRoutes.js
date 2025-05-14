@@ -25,7 +25,8 @@ const {
   updateSubCategory,
   deleteSubCategory,
   bulkDeleteSubCategories,
-  changeSubCategoryStatus
+  changeSubCategoryStatus,
+  getSubCategoryByCategoryId
 } = require("../controllers/subCategoryController");
 
 // Routes
@@ -36,5 +37,5 @@ router.put("/:id/status", changeSubCategoryStatus);
 router.put("/:id", upload.single("image_url"), updateSubCategory);
 router.delete("/:id", deleteSubCategory);
 router.delete("/bulk", bulkDeleteSubCategories); // cleaner URL
-
+router.get("/category/:id", getSubCategoryByCategoryId);
 module.exports = router;

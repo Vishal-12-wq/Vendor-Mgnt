@@ -8,9 +8,9 @@ const subCategorySchema = new mongoose.Schema(
       trim: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category", // assuming you have a Category model
+      type: String,
       required: [true, "Category is required."],
+      trim: true,
     },
     name: {
       type: String,
