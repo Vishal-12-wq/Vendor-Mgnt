@@ -1,5 +1,5 @@
 const SubCategory = require("../models/subCategory");
-
+const mongoose = require("mongoose");
 // Create SubCategory
 exports.createSubCategory = async (req, res) => {
   try {
@@ -136,3 +136,24 @@ exports.changeSubCategoryStatus = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+exports.getSubCategoryByCategoryId = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+
+    if (!categoryId) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
+
+    const subcategories = await SubCategory.find({
+      category: categoryId,
+    });
+
+    res.json({ success: true, data: subcategories });
+  } catch (error) {
+    console.error("Error fetching subcategories:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+

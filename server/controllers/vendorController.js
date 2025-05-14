@@ -241,6 +241,7 @@ exports.verifyRegistrationOtp = async (req, res) => {
       success: true,
       message: "OTP verified. Proceed to registration.",
       status: vendor.status,
+      user_id: vendor._id,
       token: token,
     });
   } catch (error) {

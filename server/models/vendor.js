@@ -60,7 +60,8 @@ const vendorSchema = new mongoose.Schema({
     type: String
   },
   organic_certificate_validity: {
-    type: Date
+    type: String,
+    trim: true
   },
   signature: {
     type: String
@@ -81,7 +82,8 @@ const vendorSchema = new mongoose.Schema({
     trim: true
   },
   fssai_validity: {
-    type: Date
+    type: String,
+    trim: true
   },
 
   // Bank Details
