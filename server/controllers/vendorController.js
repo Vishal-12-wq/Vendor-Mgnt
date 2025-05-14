@@ -12,6 +12,11 @@ exports.createVendor = async (req, res) => {
       return res.status(404).json({ success: false, message: "Vendor not found or OTP not verified." });
     }
 
+  if (vendor.status == '1') {
+        return res.status(404).json({ success: false, message: "Vendor Phone Number is already Register." });
+      }
+
+
     // Update vendor with full details
     vendor.owner_full_name = req.body.owner_full_name;
     vendor.owner_email = req.body.owner_email;
