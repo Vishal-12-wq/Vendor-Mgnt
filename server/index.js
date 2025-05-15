@@ -27,13 +27,14 @@ const subCategoryRoutes = require("./routes/subCategoryRoutes");
 const productRoutes = require("./routes/productRoutes");
 const vendorRoutes = require("./routes/vendorRoutes");
 const userRoutes = require("./routes/userRoutes");
-
+const cartRoutes = require("./routes/cartRoutes");
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/subcategories", subCategoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Default 404 handler
 app.use((req, res) => {

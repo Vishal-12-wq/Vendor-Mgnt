@@ -1,21 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const path = require("path");
+
 const {
-  sendOtp,
-  verifyOtp,
-  registerUser,
+  createUser,
   getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  bulkDeleteUsers,
+  changeStatus,
+  sendRegistrationOtp,
+  verifyRegistrationOtp
 } = require("../controllers/userController");
 
-// Multer Configuration (no uploads yet, but keeping it consistent)
-const storage = multer.memoryStorage(); // Use memoryStorage since no file upload is needed now
-const upload = multer({ storage });
+// Multer storage setup (if user requires image upload in future)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/users/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.fieldname + path.extname(file.originalname));
+  },
+});
 
-// User Routes
-router.post("/register/send-otp", upload.none(), sendOtp);
-router.post("/register/verify-otp", upload.none(), verifyOtp);
-router.post("/register", upload.none(), registerUser);
-router.get("/", getAllUsers); // Optional: For admin
+const upload = multer({ storage: storage });
+
+// If user has profile pic etc., use this. Otherwise, simple upload.none()
+const singleUpload = upload.single("image");
+
+// Routes
+router.post("/", upload.none(), createUser); // User Registration
+router.get("/", getAllUsers);
+router.get("/:id", getUserById);
+router.put("/:id", upload.none(), updateUser);
+router.delete("/:id", deleteUser);
+router.delete("/bulk", bulkDeleteUsers);
+router.put("/:id/status", changeStatus);
+router.post("/register/send-otp", upload.none(), sendRegistrationOtp);
+router.post("/register/verify-otp", upload.none(), verifyRegistrationOtp);
 
 module.exports = router;
