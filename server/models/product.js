@@ -52,7 +52,7 @@ const productSchema = new mongoose.Schema({
       values: ['Local', 'Select States', 'PAN India'],
       message: '{VALUE} is not a valid delivery detail.'
     },
-    required: [true, 'Delivery details are required.']
+    // required: [true, 'Delivery details are required.']
   },
   perishable_status: {
     type: String,
