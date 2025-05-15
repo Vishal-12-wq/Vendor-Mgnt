@@ -21,6 +21,12 @@ const productSchema = new mongoose.Schema({
     required: [true, 'HSN code is required.'],
     trim: true
   },
+  price: {
+    type: Number,
+    required: [true, 'Price is required.'],
+    min: [0, 'Price rate cannot be negative.'],
+    default: '0'
+  },
   gst_rate: {
     type: Number,
     required: [true, 'GST rate is required.'],
