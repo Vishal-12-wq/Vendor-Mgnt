@@ -61,7 +61,6 @@ exports.verifyOtp = async (req, res) => {
 
     user.otp = null;
     user.otpExpiresAt = null;
-    user.status = "1"; // Mark as verified
     await user.save();
 
     const token = jwt.sign(
@@ -90,7 +89,7 @@ exports.registerUser = async (req, res) => {
   try {
     const user = await User.findOne({ phone });
 
-    if (!user || user.status !== "1") {
+    if (!user || user.status !== "0") {
       return res.status(403).json({ success: false, message: "OTP not verified or user not found." });
     }
 
