@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "User name is required"]
+    // required: [true, "User name is required"]
   },
   phone: {
     type: String,
-    required: [true, "Phone number is required"],
+    // required: [true, "Phone number is required"],
     unique: true,
     match: [/^[0-9]{10}$/, "Please enter a valid 10-digit phone number"]
   },
