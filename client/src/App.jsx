@@ -7,6 +7,7 @@ import SubCategory from './components/pages/SubCategory';
 import Vendor from './components/pages/Vendor';
 import Login from './components/pages/Login';
 import Product from './components/pages/Product';
+import OrderHistory from './components/pages/OrderHistory';
 function App() {
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/SubCategory" element={<SubCategory />} />
                 <Route path="/Vendor" element={<Vendor />} />
                 <Route path="/Product" element={<Product />} />
+                <Route path="/OrderHistory" element={<OrderHistory />} />
               </Routes>
             </MainLayout>
           }

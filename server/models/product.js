@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Product name is required.'],
-    trim: true
-  },
   vendor: {
     type: mongoose.Schema.Types.ObjectId, // ✅ Prefer ref-based relationship
     ref: 'Vendor',
     required: [true, 'Vendor is required.']
+  },
+  name: {
+    type: String,
+    required: [true, 'Product name is required.'],
+    trim: true
   },
   description: {
     type: String,

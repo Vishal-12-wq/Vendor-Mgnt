@@ -51,6 +51,13 @@ const Sidebar = () => {
             </Link>
           </li>
 
+          <li className={`dropdown ${isActive('/OrderHistory')}`}>
+            <Link to="/OrderHistory" className="nav-link">
+              <i className="fa fa-history"></i><span>Order History</span>
+            </Link>
+          </li>
+
+
           <li className="dropdown">
             <a href="#" className="menu-toggle nav-link has-dropdown">
               <i className="fa fa-sliders"></i><span>Settings</span>
