@@ -6,6 +6,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Product name is required.'],
     trim: true
   },
+  vendor: {
+    type: mongoose.Schema.Types.ObjectId, // ✅ Prefer ref-based relationship
+    ref: 'Vendor',
+    required: [true, 'Vendor is required.']
+  },
   description: {
     type: String,
     required: [true, 'Product description is required.'],
