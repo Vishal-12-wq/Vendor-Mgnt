@@ -10,6 +10,7 @@ exports.createProduct = async (req, res) => {
       hsn_code,
       price,
       gst_rate,
+      vendor,
       meta_tag,
       meta_keyword,
       meta_title,
@@ -40,6 +41,7 @@ exports.createProduct = async (req, res) => {
       meta_keyword,
       meta_title,
       quantity,
+      vendor,
       delivery_details,
       perishable_status,
       organic_certificate,
@@ -104,6 +106,7 @@ exports.updateProduct = async (req, res) => {
       meta_tag,
       meta_keyword,
       meta_title,
+      vendor,
       price,
       quantity,
       delivery_details,
@@ -125,6 +128,7 @@ exports.updateProduct = async (req, res) => {
       gst_rate,
       meta_tag,
       meta_keyword,
+      vendor,
       meta_title,
       quantity,
       delivery_details,
@@ -231,5 +235,40 @@ exports.changeStatus = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+// Get Product by Vendor ID
+exports.getProductByVendorId = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await Product.find({ vendor : id});
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found." });
+    }
+    res.status(200).json({ success: true, data: product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get active products for website display
+exports.getWebsiteProduct = async (req, res) => {
+  try {
+    const products = await Product.find({ status: 1 });
+
+    res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      data: products
+    });
+  } catch (error) {
+    console.error("Get Website Product Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
   }
 };

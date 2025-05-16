@@ -51,12 +51,16 @@ const {
   updateProduct,
   deleteProduct,
   changeStatus,
+  getProductByVendorId,
+  getWebsiteProduct
 } = require("../controllers/productController");
 
 // Routes
 router.post("/", cpUpload, createProduct);
 router.get("/", getAllProducts);
+router.get("/website", getWebsiteProduct);
 router.get("/:id", getProductById);
+router.get("/vendor/:id", getProductByVendorId);
 router.put("/:id/status", changeStatus);
 router.put("/:id", cpUpload, updateProduct);
 router.delete("/:id", deleteProduct);

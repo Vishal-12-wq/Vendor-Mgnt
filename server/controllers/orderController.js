@@ -1,0 +1,101 @@
+const Cart = require("../models/Cart");
+const Order = require("../models/order");
+
+exports.checkout = async (req, res) => {
+  try {
+    const { user_id } = req.body;
+
+    // Find the single cart document for the user
+    const cart = await Cart.findOne({ user: user_id });
+
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ status: false, message: "Cart is empty" });
+    }
+
+    const items = cart.items.map(item => ({
+      product_id: item.product,
+      // Optional: populate product name if needed separately
+      price: item.price,
+      quantity: item.quantity
+    }));
+
+    const total_price = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const newOrder = new Order({
+      user_id,
+      items,
+      total_price
+    });
+
+    await newOrder.save();
+
+    // Clear cart items and reset totalAmount
+    cart.items = [];
+    cart.totalAmount = 0;
+    await cart.save();
+
+    res.status(200).json({ status: true, message: "Order placed successfully", order: newOrder });
+  } catch (error) {
+    console.error("Checkout Error:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+
+exports.orderHistory = async (req, res) => {
+  try {
+    const { userId } = req.params;  // Use userId (camelCase) to be consistent with route param
+
+    const orders = await Order.find({ user_id: userId }).sort({ created_at: -1 });
+
+    return res.status(200).json({ status: true, orders });
+  } catch (error) {
+    console.error("Order History Error:", error);
+    return res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+
+
+// Get all orders (with latest first)
+exports.getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ created_at: -1 });
+    res.status(200).json({ status: true, orders });
+  } catch (error) {
+    console.error("Get All Orders Error:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+
+
+// Change order status
+exports.changeOrderStatus = async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+
+    if (!orderId || !status) {
+      return res.status(400).json({ status: false, message: "Order ID and status are required" });
+    }
+
+    // Validate status value
+    const validStatuses = ["Pending", "Completed", "Cancelled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ status: false, message: "Invalid status value" });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ status: false, message: "Order not found" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({ status: true, message: "Order status updated successfully", order });
+  } catch (error) {
+    console.error("Change Order Status Error:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
