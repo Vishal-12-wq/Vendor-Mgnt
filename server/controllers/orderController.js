@@ -60,7 +60,11 @@ exports.orderHistory = async (req, res) => {
 // Get all orders (with latest first)
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ created_at: -1 });
+    const orders = await Order.find()
+      .populate('user_id', 'name') // Populate user name
+      .populate('items.product_id', 'name') // Populate product name from Product model
+      .sort({ created_at: -1 });
+
     res.status(200).json({ status: true, orders });
   } catch (error) {
     console.error("Get All Orders Error:", error);

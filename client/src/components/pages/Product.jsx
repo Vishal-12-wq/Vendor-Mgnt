@@ -11,13 +11,16 @@ const Product = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [vendors, setVendors] = useState([]);
 
   // Form data state
   const [formData, setFormData] = useState({
+    vendor:'',
     name: '',
     description: '',
     ingredients: '',
     hsn_code: '',
+    price:'',
     gst_rate: '',
     meta_tag: '',
     meta_keyword: '',
@@ -36,10 +39,12 @@ const Product = () => {
     thumbnail: null,
     status: '1',
     data_id: '',
+    edit_vendor:'',
     edit_name: '',
     edit_description: '',
     edit_ingredients: '',
     edit_hsn_code: '',
+    edit_price:'',
     edit_gst_rate: '',
     edit_meta_tag: '',
     edit_meta_keyword: '',
@@ -76,7 +81,7 @@ const Product = () => {
   const fetchSubcategories = useCallback(async (categoryId) => {
     if (!categoryId) return;
     try {
-      const res = await axios.get(`/subcategories?category=${categoryId}`);
+      const res = await axios.get(`/subcategories/category/${categoryId}`);
       setSubcategories(res.data.data);
     } catch (err) {
       console.error('Failed to fetch subcategories:', err);
@@ -96,9 +101,25 @@ const Product = () => {
     }
   }, []);
 
+
+
+    const fetchVendors = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get('/vendors');
+      setVendors(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch vendors:', err);
+      Swal.fire('Error', 'Failed to load vendors', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
+    fetchVendors();
   }, [fetchProducts, fetchCategories]);
 
   // Form handlers
@@ -244,7 +265,9 @@ const Product = () => {
   const resetForm = () => {
     setFormData(prev => ({
       ...prev,
+      vendor:'',
       name: '',
+      price:'',
       description: '',
       ingredients: '',
       hsn_code: '',
@@ -274,9 +297,11 @@ const Product = () => {
     setFormData(prev => ({
       ...prev,
       data_id: '',
+      edit_vendor : '',
       edit_name: '',
       edit_description: '',
       edit_ingredients: '',
+      edit_price:'',
       edit_hsn_code: '',
       edit_gst_rate: '',
       edit_meta_tag: '',
@@ -304,11 +329,13 @@ const Product = () => {
     setFormData(prev => ({
       ...prev,
       data_id: product._id,
+      edit_vendor: product.vendor,
       edit_name: product.name,
       edit_description: product.description,
       edit_ingredients: product.ingredients,
       edit_hsn_code: product.hsn_code,
       edit_gst_rate: product.gst_rate,
+      edit_price: product.price,
       edit_meta_tag: product.meta_tag,
       edit_meta_keyword: product.meta_keyword,
       edit_meta_title: product.meta_title,
@@ -709,6 +736,23 @@ const Product = () => {
                   </div>
 
                   <div className="form-group col-lg-4">
+                    <label>Vendor *</label>
+                    <select
+                      className={`form-control ${errors.vendor ? 'is-invalid' : ''}`}
+                      name="vendor"
+                      value={formData.vendor}
+                      onChange={handleInputChange}
+                      
+                    >
+                      <option value="">Select Vendor</option>
+                      {vendors.map(val => (
+                        <option key={val._id} value={val._id}>{val.owner_full_name}</option>
+                      ))}
+                    </select>
+                    {errors.Vendor && <div className="invalid-feedback">{errors.Vendor}</div>}
+                  </div>
+
+                  <div className="form-group col-lg-4">
                     <label>Category *</label>
                     <select
                       className={`form-control ${errors.category ? 'is-invalid' : ''}`}
@@ -754,6 +798,21 @@ const Product = () => {
                       
                     />
                     {errors.hsn_code && <div className="invalid-feedback">{errors.hsn_code}</div>}
+                  </div>
+
+                  <div className="form-group col-lg-4">
+                    <label>Price *</label>
+                    <input
+                      type="number"
+                      className={`form-control ${errors.price ? 'is-invalid' : ''}`}
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      min="0"
+                      step="0.01"
+                      
+                    />
+                    {errors.price && <div className="invalid-feedback">{errors.price}</div>}
                   </div>
 
                   <div className="form-group col-lg-4">
@@ -1039,6 +1098,23 @@ const Product = () => {
                   </div>
 
                   <div className="form-group col-lg-4">
+                    <label>Vendor *</label>
+                    <select
+                      className={`form-control ${errors.edit_vendor ? 'is-invalid' : ''}`}
+                      name="edit_vendor"
+                      value={formData.edit_vendor}
+                      onChange={handleInputChange}
+                      
+                    >
+                      <option value="">Select Vendor</option>
+                      {vendors.map(val => (
+                        <option key={val._id} value={val._id}>{val.owner_full_name}</option>
+                      ))}
+                    </select>
+                    {errors.edit_vendor && <div className="invalid-feedback">{errors.edit_vendor}</div>}
+                  </div>
+
+                  <div className="form-group col-lg-4">
                     <label>Category *</label>
                     <select
                       className={`form-control ${errors.edit_category ? 'is-invalid' : ''}`}
@@ -1084,6 +1160,21 @@ const Product = () => {
                       
                     />
                     {errors.edit_hsn_code && <div className="invalid-feedback">{errors.edit_hsn_code}</div>}
+                  </div>
+
+                  <div className="form-group col-lg-4">
+                    <label>Price *</label>
+                    <input
+                      type="number"
+                      className={`form-control ${errors.edit_price ? 'is-invalid' : ''}`}
+                      name="edit_price"
+                      value={formData.edit_price}
+                      onChange={handleInputChange}
+                      min="0"
+                      step="0.01"
+                      
+                    />
+                    {errors.edit_price && <div className="invalid-feedback">{errors.edit_price}</div>}
                   </div>
 
                   <div className="form-group col-lg-4">
