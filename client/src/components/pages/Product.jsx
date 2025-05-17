@@ -130,7 +130,7 @@ const Product = () => {
       [name]: value
     }));
 
-    if (name === 'category') {
+    if (name === 'category' || name === 'edit_category') {
       fetchSubcategories(value);
     }
   };

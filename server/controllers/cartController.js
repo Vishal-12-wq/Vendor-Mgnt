@@ -21,7 +21,7 @@ exports.addToCart = async (req, res) => {
     if (!isValidObjectId(productId)) {
       return res.status(400).json({ success: false, message: "Invalid product ID" });
     }
-    if (typeof quantity !== 'number' || quantity < 1) {
+    if (quantity < 1) {
       return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
     }
 
