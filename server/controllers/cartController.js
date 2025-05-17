@@ -12,7 +12,7 @@ const getProductPrice = async (productId) => {
 // Add to cart or update existing item
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity = 1, order_type } = req.body;
+    const { userId, productId, quantity , order_type } = req.body;
 
     // Validate inputs
     if (!isValidObjectId(userId)) {

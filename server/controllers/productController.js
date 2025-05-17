@@ -316,3 +316,40 @@ exports.searchProductsByText = async (req, res) => {
     });
   }
 };
+
+
+
+exports.getProductByCategory = async (req, res) => {
+  try {
+    const { category, subcategory } = req.query;
+    
+    // Build the search query
+    const searchQuery = {};
+    
+    // Category filtering (required)
+    if (!category) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is required."
+      });
+    }
+    searchQuery.category = category;
+    
+    // Subcategory filtering (optional)
+    if (subcategory) {
+      searchQuery.subcategory = subcategory;
+    }
+
+    const products = await Product.find(searchQuery);
+    res.status(200).json({
+      success: true,
+      data: products
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
