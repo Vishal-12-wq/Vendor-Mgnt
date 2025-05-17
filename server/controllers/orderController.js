@@ -3,9 +3,21 @@ const Order = require("../models/order");
 
 exports.checkout = async (req, res) => {
   try {
-    const { user_id } = req.body;
+    const { user_id, payment_type, transaction_id, shipping_address } = req.body;
 
-    // Find the single cart document for the user
+    // Validate payment details
+    if (!payment_type) {
+      return res.status(400).json({ status: false, message: "Payment type is required" });
+    }
+
+    if (payment_type !== 'COD' && !transaction_id) {
+      return res.status(400).json({ 
+        status: false, 
+        message: "Transaction ID is required for non-COD payments" 
+      });
+    }
+
+    // Find the cart
     const cart = await Cart.findOne({ user: user_id });
 
     if (!cart || cart.items.length === 0) {
@@ -14,7 +26,7 @@ exports.checkout = async (req, res) => {
 
     const items = cart.items.map(item => ({
       product_id: item.product,
-      // Optional: populate product name if needed separately
+      product_name: item.product_name, // Make sure this is populated in cart
       price: item.price,
       quantity: item.quantity
     }));
@@ -24,23 +36,32 @@ exports.checkout = async (req, res) => {
     const newOrder = new Order({
       user_id,
       items,
-      total_price
+      total_price,
+      payment_type,
+      transaction_id: payment_type === 'COD' ? undefined : transaction_id,
+      shipping_address
     });
 
     await newOrder.save();
 
-    // Clear cart items and reset totalAmount
+    // Clear cart
     cart.items = [];
     cart.totalAmount = 0;
     await cart.save();
 
-    res.status(200).json({ status: true, message: "Order placed successfully", order: newOrder });
+    res.status(200).json({ 
+      status: true, 
+      message: "Order placed successfully", 
+      order: newOrder 
+    });
   } catch (error) {
     console.error("Checkout Error:", error);
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 
+// Other controller methods (orderHistory, getAllOrders, changeOrderStatus) remain the same
+// but will now include the new fields in their responses
 
 exports.orderHistory = async (req, res) => {
   try {

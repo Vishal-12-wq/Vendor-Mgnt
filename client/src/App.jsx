@@ -10,6 +10,7 @@ import Product from './components/pages/Product';
 import OrderHistory from './components/pages/OrderHistory';
 import Coupon from './components/pages/Coupon';
 import Banner from './components/pages/Banner';
+import UserManagement from './components/pages/UserManagement';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/OrderHistory" element={<OrderHistory />} />
                 <Route path="/Coupon" element={<Coupon />} />
                 <Route path="/Banner" element={<Banner />} />
+                <Route path="/UserManagement" element={<UserManagement />} />
 
               </Routes>
             </MainLayout>

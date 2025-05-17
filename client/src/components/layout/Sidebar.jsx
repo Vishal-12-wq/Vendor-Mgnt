@@ -65,7 +65,13 @@ const Sidebar = () => {
 
           <li className={`dropdown ${isActive('/Banner')}`}>
             <Link to="/Banner" className="nav-link">
-              <i className="fa fa-ticket"></i><span>Banner</span>
+              <i className="fa fa-image"></i><span>Banner</span>
+            </Link>
+          </li>
+
+          <li className={`dropdown ${isActive('/UserManagement')}`}>
+            <Link to="/UserManagement" className="nav-link">
+              <i className="fa fa-user"></i><span>User Management</span>
             </Link>
           </li>
 
