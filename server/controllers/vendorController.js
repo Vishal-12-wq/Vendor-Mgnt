@@ -3,19 +3,27 @@ const jwt = require("jsonwebtoken");
 // Create Vendor
 exports.createVendor = async (req, res) => {
   try {
-    const { owner_phone } = req.body;
+    const { owner_phone , adminvalue } = req.body;
     const files = req.files || {};
 
-    const vendor = await Vendor.findOne({ owner_phone });
-
-    if (!vendor) {
-      return res.status(404).json({ success: false, message: "Vendor not found or OTP not verified." });
+    if(adminvalue == 'admin')
+    {
+        vendor = new Vendor();
+        vendor.owner_phone = owner_phone;
     }
+    else
+    {
+      const vendor = await Vendor.findOne({ owner_phone });
 
-  if (vendor.status == '1') {
-        return res.status(404).json({ success: false, message: "Vendor Phone Number is already Register." });
+      if (!vendor) {
+        return res.status(404).json({ success: false, message: "Vendor not found or OTP not verified." });
       }
 
+      if (vendor.status == '1') {
+          return res.status(404).json({ success: false, message: "Vendor Phone Number is already Register." });
+        }
+
+    }
 
     // Update vendor with full details
     vendor.owner_full_name = req.body.owner_full_name;

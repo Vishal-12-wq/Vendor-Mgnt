@@ -342,7 +342,7 @@ const Product = () => {
       edit_quantity: product.quantity,
       edit_delivery_details: product.delivery_details,
       edit_perishable_status: product.perishable_status,
-      edit_certificate_validity: product.certificate_validity,
+      edit_certificate_validity: product.organic_certificate_validity,
       edit_fssai_details: product.fssai_details,
       edit_product_dimension: product.product_dimension,
       edit_product_weight: product.product_weight,
