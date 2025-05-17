@@ -9,6 +9,7 @@ import Login from './components/pages/Login';
 import Product from './components/pages/Product';
 import OrderHistory from './components/pages/OrderHistory';
 import Coupon from './components/pages/Coupon';
+import Banner from './components/pages/Banner';
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
                 <Route path="/Product" element={<Product />} />
                 <Route path="/OrderHistory" element={<OrderHistory />} />
                 <Route path="/Coupon" element={<Coupon />} />
+                <Route path="/Banner" element={<Banner />} />
+
               </Routes>
             </MainLayout>
           }
