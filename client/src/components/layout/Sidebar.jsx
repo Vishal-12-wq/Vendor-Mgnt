@@ -57,6 +57,12 @@ const Sidebar = () => {
             </Link>
           </li>
 
+          <li className={`dropdown ${isActive('/Coupon')}`}>
+            <Link to="/Coupon" className="nav-link">
+              <i className="fa fa-ticket"></i><span>Coupon</span>
+            </Link>
+          </li>
+
 
           <li className="dropdown">
             <a href="#" className="menu-toggle nav-link has-dropdown">
