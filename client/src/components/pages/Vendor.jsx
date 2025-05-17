@@ -16,6 +16,7 @@ const Vendor = () => {
   // Form data state
   const [formData, setFormData] = useState({
     // Owner Details
+    adminvalue:'admin',
     owner_full_name: '',
     owner_phone: '',
     owner_email: '',
@@ -647,6 +648,12 @@ const Vendor = () => {
                 <div className="row">
                   <h6 className="col-12 mb-3">Owner Details</h6>
                   
+                  <input 
+                  type='hidden'                       
+                  value={formData.adminvalue}
+                  onChange={handleInputChange} 
+                  name="adminvalue"/>
+
                   <div className="form-group col-md-4">
                     <label>Full Name *</label>
                     <input
@@ -1096,7 +1103,7 @@ const Vendor = () => {
               <form className="needs-validation" onSubmit={handleUpdate} encType="multipart/form-data" noValidate>
                 <div className="row">
                   <h6 className="col-12 mb-3">Owner Details</h6>
-                  
+
                   <div className="form-group col-md-4">
                     <label>Full Name *</label>
                     <input
