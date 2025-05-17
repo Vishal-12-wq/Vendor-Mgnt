@@ -76,16 +76,24 @@ exports.verifyRegistrationOtp = async (req, res) => {
 // Create User (Full Registration)
 exports.createUser = async (req, res) => {
   try {
-    const { phone, name, email } = req.body;
+    const { phone, name, email,adminvalue } = req.body;
 
-    const user = await User.findOne({ phone });
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found or OTP not verified." });
+    if(adminvalue == 'admin')
+    {
+        user = new User();
+        user.phone = phone;
     }
+    else
+    {
+      const user = await User.findOne({ phone });
 
-    if (user.status === '1') {
-      return res.status(400).json({ success: false, message: "User already registered." });
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found or OTP not verified." });
+      }
+
+      if (user.status === '1') {
+        return res.status(400).json({ success: false, message: "User already registered." });
+      }
     }
 
     user.name = name;
@@ -96,6 +104,13 @@ exports.createUser = async (req, res) => {
 
     res.status(201).json({ success: true, data: user });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      const errors = {};
+      for (const field in error.errors) {
+        errors[field] = error.errors[field].message;
+      }
+      return res.status(400).json({ success: false, errors });
+    }
     res.status(500).json({ success: false, message: error.message });
   }
 };

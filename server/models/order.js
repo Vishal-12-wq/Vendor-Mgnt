@@ -11,8 +11,31 @@ const orderSchema = new mongoose.Schema({
     }
   ],
   total_price: { type: Number, required: true },
-  status: { type: String, enum: ['Pending', 'Completed', 'Cancelled'], default: 'Pending' },
-  created_at: { type: Date, default: Date.now }
+  status: { type: String, enum: ['Pending', 'Completed', 'Cancelled', 'Shipped', 'Delivered'], default: 'Pending' },
+  payment_type: { 
+    type: String, 
+    enum: ['COD', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI', 'Wallet'],
+    required: true 
+  },
+  transaction_id: { 
+    type: String,
+    required: function() {
+      return this.payment_type !== 'COD';
+    }
+  },
+  shipping_address: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ShippingAddress',
+    required: true
+  },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
+});
+
+// Update the updated_at field before saving
+orderSchema.pre('save', function(next) {
+  this.updated_at = Date.now();
+  next();
 });
 
 module.exports = mongoose.model('Order', orderSchema);

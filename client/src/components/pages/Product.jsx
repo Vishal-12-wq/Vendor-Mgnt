@@ -749,7 +749,7 @@ const Product = () => {
                         <option key={val._id} value={val._id}>{val.owner_full_name}</option>
                       ))}
                     </select>
-                    {errors.Vendor && <div className="invalid-feedback">{errors.Vendor}</div>}
+                    {errors.vendor && <div className="invalid-feedback">{errors.vendor}</div>}
                   </div>
 
                   <div className="form-group col-lg-4">

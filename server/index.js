@@ -31,6 +31,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const couponRoutes = require("./routes/couponRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
+const shippingAddressRoutes = require('./routes/shippingAddressRoutes');
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/subcategories", subCategoryRoutes);
@@ -41,6 +42,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/banners", bannerRoutes);
+app.use("/api/shipping-address", shippingAddressRoutes);
 
 // Default 404 handler
 app.use((req, res) => {
