@@ -8,6 +8,8 @@ import Vendor from './components/pages/Vendor';
 import Login from './components/pages/Login';
 import Product from './components/pages/Product';
 import OrderHistory from './components/pages/OrderHistory';
+import Coupon from './components/pages/Coupon';
+
 function App() {
   return (
     <Router>
@@ -28,6 +30,7 @@ function App() {
                 <Route path="/Vendor" element={<Vendor />} />
                 <Route path="/Product" element={<Product />} />
                 <Route path="/OrderHistory" element={<OrderHistory />} />
+                <Route path="/Coupon" element={<Coupon />} />
               </Routes>
             </MainLayout>
           }
