@@ -495,7 +495,7 @@ const Product = () => {
                       className="btn btn-outline-success m-2" 
                       data-toggle="modal" 
                       data-target=".bd-example-modal-lg"
-                      disabled={isLoading}
+                      
                     >
                       <i className="fa fa-user-plus"></i> New
                     </button>

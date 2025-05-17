@@ -12,9 +12,9 @@ const Sidebar = () => {
       <aside id="sidebar-wrapper">
         <div className="sidebar-brand">
           <Link to="/Dashboard">
-            <span className="logo-name font-16">Natural </span>
-            <img alt="logo" src="/assets/img/mainlogo.png" style={{ borderRadius:'100px', width: '50px', height:'50px' }} className="header-logo" />
-            <span className="logo-name font-16"> Farmz</span>
+            {/* <span className="logo-name font-16"> </span> */}
+            <img alt="logo" src="/assets/img/mainlogo.png" style={{  width: '50px', height:'50px' }} className="header-logo" />
+            {/* <span className="logo-name font-16"> Farmz</span> */}
           </Link>
         </div>
         <ul className="sidebar-menu">
@@ -63,20 +63,6 @@ const Sidebar = () => {
             </Link>
           </li>
 
-
-          <li className="dropdown">
-            <a href="#" className="menu-toggle nav-link has-dropdown">
-              <i className="fa fa-sliders"></i><span>Settings</span>
-            </a>
-            <ul className="dropdown-menu">
-              <li><Link className={`nav-link ${isActive('/about')}`} to="/about">About</Link></li>
-              <li><Link className={`nav-link ${isActive('/social-media')}`} to="/social-media">Social Media</Link></li>
-              <li><Link className={`nav-link ${isActive('/seo')}`} to="/seo">SEO</Link></li>
-              <li><Link className={`nav-link ${isActive('/smtp')}`} to="/smtp">SMTP</Link></li>
-              <li><Link className={`nav-link ${isActive('/newsletter')}`} to="/newsletter">Newsletter</Link></li>
-              <li><Link className={`nav-link ${isActive('/pages')}`} to="/pages">Website Pages</Link></li>
-            </ul>
-          </li>
         </ul>
       </aside>
     </div>
