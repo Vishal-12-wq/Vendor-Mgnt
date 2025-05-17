@@ -53,7 +53,8 @@ const {
   changeStatus,
   getProductByVendorId,
   getWebsiteProduct,
-  searchProductsByText
+  searchProductsByText,
+  getProductByCategory
 } = require("../controllers/productController");
 
 // Routes
@@ -66,4 +67,5 @@ router.put("/:id/status", changeStatus);
 router.put("/:id", cpUpload, updateProduct);
 router.delete("/:id", deleteProduct);
 router.get("/search/filter", searchProductsByText);
+router.get("/search/byCategory", getProductByCategory);
 module.exports = router;
