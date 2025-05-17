@@ -52,7 +52,8 @@ const {
   deleteProduct,
   changeStatus,
   getProductByVendorId,
-  getWebsiteProduct
+  getWebsiteProduct,
+  searchProductsByText
 } = require("../controllers/productController");
 
 // Routes
@@ -64,5 +65,5 @@ router.get("/vendor/:id", getProductByVendorId);
 router.put("/:id/status", changeStatus);
 router.put("/:id", cpUpload, updateProduct);
 router.delete("/:id", deleteProduct);
-
+router.get("/search/filter", searchProductsByText);
 module.exports = router;

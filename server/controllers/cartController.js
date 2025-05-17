@@ -12,7 +12,7 @@ const getProductPrice = async (productId) => {
 // Add to cart or update existing item
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity = 1 } = req.body;
+    const { userId, productId, quantity = 1, order_type } = req.body;
 
     // Validate inputs
     if (!isValidObjectId(userId)) {
@@ -43,6 +43,7 @@ exports.addToCart = async (req, res) => {
         items: [{
           product: productId,
           quantity,
+          order_type,
           price: price // Make sure to include the price field
         }]
       });
@@ -60,6 +61,7 @@ exports.addToCart = async (req, res) => {
         cart.items.push({
           product: productId,
           quantity,
+          order_type,
           price: price // Make sure to include the price field
         });
       }
@@ -98,7 +100,7 @@ exports.getCart = async (req, res) => {
     const cart = await Cart.findOne({ user: userId })
       .populate({
         path: 'items.product',
-        select: 'name images price quantity status',
+        select: 'name images price quantity status order_type',
         match: { status: '1' } // Only populate active products
       });
 
@@ -115,6 +117,7 @@ exports.getCart = async (req, res) => {
       success: true, 
       data: {
         cartId: cart._id,
+        order_type: cart.order_type,
         userId: cart.user,
         items: activeItems,
         totalItems: activeItems.length,
@@ -188,7 +191,7 @@ exports.updateCartItem = async (req, res) => {
       data: {
         cartId: cart._id,
         totalItems: cart.items.length,
-        totalAmount: cart.totalAmount
+        totalAmount: cart.totalAmount,
       }
     });
 

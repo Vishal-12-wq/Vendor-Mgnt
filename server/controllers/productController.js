@@ -272,3 +272,47 @@ exports.getWebsiteProduct = async (req, res) => {
     });
   }
 };
+
+
+
+exports.searchProductsByText = async (req, res) => {
+  try {
+    const { q, minPrice, maxPrice } = req.query;
+    
+    // Build the search query
+    const searchQuery = {};
+    
+    // Text search (optional)
+    if (q && q.trim() !== '') {
+      searchQuery.$or = [
+        { name: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+        { ingredients: { $regex: q, $options: 'i' } }
+      ];
+    }
+    
+    // Price range filtering (optional)
+    if (minPrice || maxPrice) {
+      searchQuery.price = {};
+      if (minPrice) searchQuery.price.$gte = Number(minPrice);
+      if (maxPrice) searchQuery.price.$lte = Number(maxPrice);
+    }
+
+    const products = await Product.find(searchQuery)
+      .limit(10)
+      .populate('category', 'name') // Optional: populate related fields
+      .populate('subcategory', 'name')
+      .populate('vendor', 'name');
+
+    res.status(200).json({
+      success: true,
+      data: products
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};

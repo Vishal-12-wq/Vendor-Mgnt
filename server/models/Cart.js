@@ -17,6 +17,10 @@ const cartItemSchema = new mongoose.Schema({
     required: [true, "Price is required"],
     min: [0, "Price cannot be negative"]
   },
+  order_type: {
+    type: String,
+    required: [true, "Order Type is required"],
+  },
   status: {
     type: String,
     enum: ['active', 'removed', 'out_of_stock'],
