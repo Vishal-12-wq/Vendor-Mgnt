@@ -7,12 +7,12 @@ exports.checkout = async (req, res) => {
 
     // Validate payment details
     if (!payment_type) {
-      return res.status(400).json({ status: false, message: "Payment type is required" });
+      return res.status(400).json({ success: false, message: "Payment type is required" });
     }
 
     // if (payment_type !== 'COD' && !transaction_id) {
     //   return res.status(400).json({ 
-    //     status: false, 
+    //     success: false, 
     //     message: "Transaction ID is required for non-COD payments" 
     //   });
     // }
@@ -21,7 +21,7 @@ exports.checkout = async (req, res) => {
     const cart = await Cart.findOne({ user: user_id });
 
     if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ status: false, message: "Cart is empty" });
+      return res.status(400).json({ success: false, message: "Cart is empty" });
     }
 
     const items = cart.items.map(item => ({
@@ -57,7 +57,7 @@ exports.checkout = async (req, res) => {
     });
   } catch (error) {
     console.error("Checkout Error:", error);
-    res.status(500).json({ status: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -70,10 +70,10 @@ exports.orderHistory = async (req, res) => {
 
     const orders = await Order.find({ user_id: userId }).sort({ created_at: -1 });
 
-    return res.status(200).json({ status: true, orders });
+    return res.status(200).json({ success: true, orders });
   } catch (error) {
     console.error("Order History Error:", error);
-    return res.status(500).json({ status: false, message: "Internal server error" });
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -87,10 +87,10 @@ exports.getAllOrders = async (req, res) => {
       .populate('items.product_id', 'name') // Populate product name from Product model
       .sort({ created_at: -1 });
 
-    res.status(200).json({ status: true, orders });
+    res.status(200).json({ success: true, orders });
   } catch (error) {
     console.error("Get All Orders Error:", error);
-    res.status(500).json({ status: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -102,26 +102,26 @@ exports.changeOrderStatus = async (req, res) => {
     const { orderId, status } = req.body;
 
     if (!orderId || !status) {
-      return res.status(400).json({ status: false, message: "Order ID and status are required" });
+      return res.status(400).json({ success: false, message: "Order ID and status are required" });
     }
 
     // Validate status value
     const validStatuses = ["Pending", "Completed", "Cancelled"];
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ status: false, message: "Invalid status value" });
+      return res.status(400).json({ success: false, message: "Invalid status value" });
     }
 
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.status(404).json({ status: false, message: "Order not found" });
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
 
     order.status = status;
     await order.save();
 
-    res.status(200).json({ status: true, message: "Order status updated successfully", order });
+    res.status(200).json({ success: true, message: "Order status updated successfully", order });
   } catch (error) {
     console.error("Change Order Status Error:", error);
-    res.status(500).json({ status: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
