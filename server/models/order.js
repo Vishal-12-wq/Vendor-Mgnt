@@ -13,15 +13,11 @@ const orderSchema = new mongoose.Schema({
   total_price: { type: Number, required: true },
   status: { type: String, enum: ['Pending', 'Completed', 'Cancelled', 'Shipped', 'Delivered'], default: 'Pending' },
   payment_type: { 
-    type: String, 
-    enum: ['COD', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI', 'Wallet'],
+    type: String,
     required: true 
   },
   transaction_id: { 
     type: String,
-    required: function() {
-      return this.payment_type !== 'COD';
-    }
   },
   shipping_address: {
     type: mongoose.Schema.Types.ObjectId,
