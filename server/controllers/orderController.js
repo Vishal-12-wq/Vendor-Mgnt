@@ -51,7 +51,7 @@ exports.checkout = async (req, res) => {
     await cart.save();
 
     res.status(200).json({ 
-      status: true, 
+      success: true, 
       message: "Order placed successfully", 
       order: newOrder 
     });
