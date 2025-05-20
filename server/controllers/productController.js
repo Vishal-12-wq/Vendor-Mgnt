@@ -27,7 +27,8 @@ exports.createProduct = async (req, res) => {
 
       product_type,
       sale_price,
-      discount
+      discount,
+      subscription
     } = req.body;
 
     const organic_certificate = req.files?.organic_certificate?.[0]?.filename || "";
@@ -61,7 +62,8 @@ exports.createProduct = async (req, res) => {
 
       product_type,
       sale_price,
-      discount
+      discount,
+      subscription
     });
 
     await product.save();
@@ -130,7 +132,8 @@ exports.updateProduct = async (req, res) => {
 
       product_type,
       sale_price,
-      discount
+      discount,
+      subscription
     } = req.body;
 
     const updateData = {
@@ -159,7 +162,8 @@ exports.updateProduct = async (req, res) => {
 
       product_type,
       sale_price,
-      discount
+      discount,
+      subscription
     };
 
     if (req.files?.organic_certificate?.[0]) {
@@ -273,10 +277,17 @@ exports.getProductByVendorId = async (req, res) => {
   }
 };
 
-// Get active products for website display
+// Get active products for website display (optionally filtered by productType)
 exports.getWebsiteProduct = async (req, res) => {
   try {
-    const products = await Product.find({ status: 1 });
+        const { product_type } = req.query;
+
+        const filter = { status: 1 };
+        if (product_type) {
+          filter.product_type = product_type;
+        }
+
+    const products = await Product.find(filter);
 
     res.status(200).json({
       success: true,
@@ -291,6 +302,7 @@ exports.getWebsiteProduct = async (req, res) => {
     });
   }
 };
+
 
 
 

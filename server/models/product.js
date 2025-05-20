@@ -141,7 +141,14 @@ const productSchema = new mongoose.Schema({
   },
 
 
+
   status: {
+    type: String,
+    enum: ['1', '0'],
+    default: '1'
+  },
+
+  subscription: {
     type: String,
     enum: ['1', '0'],
     default: '1'
