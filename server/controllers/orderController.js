@@ -28,7 +28,8 @@ exports.checkout = async (req, res) => {
       product_id: item.product,
       product_name: item.product_name, // Make sure this is populated in cart
       price: item.price,
-      quantity: item.quantity
+      quantity: item.quantity,
+      order_type: item.order_type
     }));
 
     const total_price = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
