@@ -121,15 +121,8 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Product thumbnail is required.']
   },
   
-  top_product: {
-    type: String,
-    trim: true
-  },
-  upcomming_product: {
-    type: String,
-    trim: true
-  },
-    best_deal: {
+  product_type:
+  {
     type: String,
     trim: true
   },

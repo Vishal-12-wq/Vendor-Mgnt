@@ -25,9 +25,7 @@ exports.createProduct = async (req, res) => {
       subcategory,
       status,
 
-      top_product,
-      upcomming_product,
-      best_deal,
+      product_type,
       sale_price,
       discount
     } = req.body;
@@ -61,9 +59,7 @@ exports.createProduct = async (req, res) => {
       thumbnail,
       status,
 
-      top_product,
-      upcomming_product,
-      best_deal,
+      product_type,
       sale_price,
       discount
     });
@@ -132,9 +128,7 @@ exports.updateProduct = async (req, res) => {
       status,
 
 
-      top_product,
-      upcomming_product,
-      best_deal,
+      product_type,
       sale_price,
       discount
     } = req.body;
@@ -163,9 +157,7 @@ exports.updateProduct = async (req, res) => {
 
 
 
-      top_product,
-      upcomming_product,
-      best_deal,
+      product_type,
       sale_price,
       discount
     };
