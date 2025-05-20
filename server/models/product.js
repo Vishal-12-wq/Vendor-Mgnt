@@ -32,6 +32,8 @@ const productSchema = new mongoose.Schema({
     min: [0, 'Price rate cannot be negative.'],
     default: '0'
   },
+
+
   gst_rate: {
     type: Number,
     required: [true, 'GST rate is required.'],
@@ -118,6 +120,34 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Product thumbnail is required.']
   },
+  
+  top_product: {
+    type: String,
+    trim: true
+  },
+  upcomming_product: {
+    type: String,
+    trim: true
+  },
+    best_deal: {
+    type: String,
+    trim: true
+  },
+    sale_price: {
+    type: Number,
+    required: [true, 'Price is required.'],
+    min: [0, 'Price rate cannot be negative.'],
+    default: '0'
+  },
+  
+  discount : {
+    type: Number,
+    required: [true, 'Price is required.'],
+    min: [0, 'Price rate cannot be negative.'],
+    default: '0'
+  },
+
+
   status: {
     type: String,
     enum: ['1', '0'],

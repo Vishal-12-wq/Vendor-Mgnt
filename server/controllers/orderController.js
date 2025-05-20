@@ -10,12 +10,12 @@ exports.checkout = async (req, res) => {
       return res.status(400).json({ status: false, message: "Payment type is required" });
     }
 
-    if (payment_type !== 'COD' && !transaction_id) {
-      return res.status(400).json({ 
-        status: false, 
-        message: "Transaction ID is required for non-COD payments" 
-      });
-    }
+    // if (payment_type !== 'COD' && !transaction_id) {
+    //   return res.status(400).json({ 
+    //     status: false, 
+    //     message: "Transaction ID is required for non-COD payments" 
+    //   });
+    // }
 
     // Find the cart
     const cart = await Cart.findOne({ user: user_id });

@@ -23,7 +23,13 @@ exports.createProduct = async (req, res) => {
       product_weight,
       category,
       subcategory,
-      status
+      status,
+
+      top_product,
+      upcomming_product,
+      best_deal,
+      sale_price,
+      discount
     } = req.body;
 
     const organic_certificate = req.files?.organic_certificate?.[0]?.filename || "";
@@ -53,7 +59,13 @@ exports.createProduct = async (req, res) => {
       subcategory,
       images,
       thumbnail,
-      status
+      status,
+
+      top_product,
+      upcomming_product,
+      best_deal,
+      sale_price,
+      discount
     });
 
     await product.save();
@@ -117,7 +129,14 @@ exports.updateProduct = async (req, res) => {
       product_weight,
       category,
       subcategory,
-      status
+      status,
+
+
+      top_product,
+      upcomming_product,
+      best_deal,
+      sale_price,
+      discount
     } = req.body;
 
     const updateData = {
@@ -140,7 +159,15 @@ exports.updateProduct = async (req, res) => {
       product_weight,
       category,
       subcategory,
-      status
+      status,
+
+
+
+      top_product,
+      upcomming_product,
+      best_deal,
+      sale_price,
+      discount
     };
 
     if (req.files?.organic_certificate?.[0]) {

@@ -90,7 +90,7 @@ const handleStatusChange = (orderId, newStatus) => {
                                 <ul className="list-unstyled">
                                   {order.items.map((item, idx) => (
                                     <li key={idx}>
-                                      {item.product_id?.name || item.product_name || 'N/A'} (x{item.quantity})
+                                      {item.product_id?.name || item.product_name || 'N/A'} (x{item.quantity})  (x{item.order_type})
                                     </li>
                                   ))}
                                 </ul>
