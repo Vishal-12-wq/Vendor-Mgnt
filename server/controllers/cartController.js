@@ -55,7 +55,8 @@ exports.addToCart = async (req, res) => {
 
       if (existingItemIndex > -1) {
         // Update quantity if product exists
-        cart.items[existingItemIndex].quantity += quantity;
+          cart.items[existingItemIndex].quantity += parseInt(quantity);
+
       } else {
         // Add new item if product doesn't exist
         cart.items.push({
@@ -182,7 +183,8 @@ exports.updateCartItem = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found in cart" });
     }
 
-    cart.items[itemIndex].quantity = quantity;
+    cart.items[itemIndex].quantity += parseInt(quantity);
+
     await cart.save();
 
     return res.status(200).json({ 
