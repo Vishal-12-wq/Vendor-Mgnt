@@ -66,9 +66,13 @@ exports.checkout = async (req, res) => {
 
 exports.orderHistory = async (req, res) => {
   try {
-    const { userId } = req.params;  // Use userId (camelCase) to be consistent with route param
+    const { userId } = req.params;
 
-    const orders = await Order.find({ user_id: userId }).sort({ created_at: -1 });
+    const orders = await Order.find({ user_id: userId })
+      .populate('user_id', 'name') // get user name
+      .populate('items.product_id', 'name thumbnail price') // get product details for each item
+      .populate('shipping_address', 'user fullName phoneNumber addressLine1 addressLine2 city state zipCode country') // adjust fields as per ShippingAddress schema
+      .sort({ created_at: -1 }); // use snake_case as per your schema
 
     return res.status(200).json({ success: true, orders });
   } catch (error) {
@@ -76,6 +80,7 @@ exports.orderHistory = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 
 
