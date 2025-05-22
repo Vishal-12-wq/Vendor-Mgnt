@@ -183,7 +183,7 @@ exports.updateCartItem = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found in cart" });
     }
 
-    cart.items[itemIndex].quantity += parseInt(quantity);
+    cart.items[itemIndex].quantity = parseInt(quantity);
 
     await cart.save();
 
