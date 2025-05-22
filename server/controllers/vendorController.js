@@ -1,29 +1,58 @@
 const Vendor = require("../models/vendor");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
+const bucket = require("../gcs"); // Make sure this path is correct
+
+
 // Create Vendor
 exports.createVendor = async (req, res) => {
   try {
-    const { owner_phone , adminvalue } = req.body;
+    const { owner_phone, adminvalue } = req.body;
     const files = req.files || {};
 
-    if(adminvalue == 'admin')
-    {
-        vendor = new Vendor();
-        vendor.owner_phone = owner_phone;
-    }
-    else
-    {
-      const vendor = await Vendor.findOne({ owner_phone });
+    let vendor;
+
+    if (adminvalue == 'admin') {
+      vendor = new Vendor();
+      vendor.owner_phone = owner_phone;
+    } else {
+      vendor = await Vendor.findOne({ owner_phone });
 
       if (!vendor) {
         return res.status(404).json({ success: false, message: "Vendor not found or OTP not verified." });
       }
 
       if (vendor.status == '1') {
-          return res.status(404).json({ success: false, message: "Vendor Phone Number is already Register." });
-        }
-
+        return res.status(404).json({ success: false, message: "Vendor Phone Number is already Register." });
+      }
     }
+
+    // Handle file upload to GCS
+    const uploadToGCS = async (file, folder) => {
+      const localPath = file.path;
+      const ext = path.extname(file.originalname);
+      const gcsFileName = `${folder}/${uuidv4()}${ext}`;
+      const bucketFile = bucket.file(gcsFileName);
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: {
+          contentType: file.mimetype,
+        },
+      });
+
+      fs.unlinkSync(localPath); // Delete local file
+      return `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
+    };
+
+    if (files.logo) vendor.logo = await uploadToGCS(files.logo[0], "vendors/logo");
+    if (files.organic_certificate) vendor.organic_certificate = await uploadToGCS(files.organic_certificate[0], "vendors/organic_certificate");
+    if (files.signature) vendor.signature = await uploadToGCS(files.signature[0], "vendors/signature");
+    if (files.fssai_certificate) vendor.fssai_certificate = await uploadToGCS(files.fssai_certificate[0], "vendors/fssai_certificate");
 
     // Update vendor with full details
     vendor.owner_full_name = req.body.owner_full_name;
@@ -49,11 +78,6 @@ exports.createVendor = async (req, res) => {
     vendor.gst_state = req.body.gst_state;
     vendor.status = req.body.status || "1"; // default active
 
-    if (files.logo) vendor.logo = files.logo[0].filename;
-    if (files.organic_certificate) vendor.organic_certificate = files.organic_certificate[0].filename;
-    if (files.signature) vendor.signature = files.signature[0].filename;
-    if (files.fssai_certificate) vendor.fssai_certificate = files.fssai_certificate[0].filename;
-
     await vendor.save();
 
     res.status(201).json({ success: true, data: vendor });
@@ -68,6 +92,7 @@ exports.createVendor = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Get All Vendors
 exports.getAllVendors = async (req, res) => {
@@ -92,20 +117,44 @@ exports.getVendorById = async (req, res) => {
   }
 };
 
-// Update Vendor
 exports.updateVendor = async (req, res) => {
   try {
-    const files = req.files || {};
-    const updateData = {
-      ...req.body,
+    const { id } = req.params;
+    const updateData = { ...req.body };
+
+    const uploadImage = async (file, folder) => {
+      const ext = path.extname(file.originalname);
+      const gcsFileName = `${folder}/${uuidv4()}${ext}`;
+      const localPath = file.path;
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: { contentType: file.mimetype },
+      });
+
+      fs.unlinkSync(localPath);
+      return `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
     };
 
-    if (files.logo) updateData.logo = files.logo[0].filename;
-    if (files.organic_certificate) updateData.organic_certificate = files.organic_certificate[0].filename;
-    if (files.signature) updateData.signature = files.signature[0].filename;
-    if (files.fssai_certificate) updateData.fssai_certificate = files.fssai_certificate[0].filename;
+    if (req.files.logo) {
+      updateData.logo = await uploadImage(req.files.logo[0], 'vendors/logo');
+    }
 
-    const vendor = await Vendor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (req.files.organic_certificate) {
+      updateData.organic_certificate = await uploadImage(req.files.organic_certificate[0], 'vendors/organic_certificate');
+    }
+
+    if (req.files.signature) {
+      updateData.signature = await uploadImage(req.files.signature[0], 'vendors/signature');
+    }
+
+    if (req.files.fssai_certificate) {
+      updateData.fssai_certificate = await uploadImage(req.files.fssai_certificate[0], 'vendors/fssai_certificate');
+    }
+
+    const vendor = await Vendor.findByIdAndUpdate(id, updateData, { new: true });
 
     if (!vendor) {
       return res.status(404).json({ success: false, message: "Vendor not found" });
@@ -113,9 +162,11 @@ exports.updateVendor = async (req, res) => {
 
     res.status(200).json({ success: true, data: vendor });
   } catch (error) {
+    console.error("Update Vendor Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Delete Vendor
 exports.deleteVendor = async (req, res) => {

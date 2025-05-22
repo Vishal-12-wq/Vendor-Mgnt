@@ -303,9 +303,9 @@ const Banner = () => {
                             <td>{index + 1}</td>
                             <td>
                               <img 
-                                src={`${process.env.REACT_APP_API_IMAGE_URL}/banners/${val.image_url}`} 
+                                src={`${val.image_url}`} 
                                 className="thumbnail-image"
-                                data-fullimage={`${process.env.REACT_APP_API_IMAGE_URL}/banners/${val.image_url}`}
+                                data-fullimage={`${val.image_url}`}
                                 alt="Banner" 
                                 height={50} 
                               />
@@ -351,7 +351,7 @@ const Banner = () => {
                                     data-title={val.title}
                                     data-sub_title={val.sub_title}
                                     data-status={val.status}
-                                    data-image={`${process.env.REACT_APP_API_IMAGE_URL}/banners/${val.image_url}`}
+                                    data-image={`${val.image_url}`}
                                   >
                                     <i className="far fa-edit"></i> Edit
                                   </a>

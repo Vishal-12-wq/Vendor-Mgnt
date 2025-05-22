@@ -38,6 +38,16 @@ const Product = () => {
     images: [],
     thumbnail: null,
     status: '1',
+      product_type: 'regular', // or 'subscription'
+  sale_price: '',
+  discount: '',
+  subscription: '',
+  // ... edit fields
+  edit_product_type: 'regular',
+  edit_sale_price: '',
+  edit_discount: '',
+  edit_subscription: '',
+
     data_id: '',
     edit_vendor:'',
     edit_name: '',
@@ -348,11 +358,15 @@ const Product = () => {
       edit_product_weight: product.product_weight,
       edit_category: product.category,
       edit_subcategory: product.subcategory,
-      edit_status: product.status
+      edit_status: product.status,
+      edit_product_type: product.product_type ,
+      edit_sale_price: product.sale_price,
+      edit_discount: product.discount,
+      edit_subscription: product.subscription,
     }));
 
     if (product.thumbnail) {
-      setPreviewImage(`${process.env.REACT_APP_API_IMAGE_URL}/products/${product.thumbnail}`);
+      setPreviewImage(`${product.thumbnail}`);
     }
 
     fetchSubcategories(product.category);
@@ -570,9 +584,9 @@ const Product = () => {
                                 <td>{index + 1}</td>
                                 <td>
                                   <img 
-                                    src={`${process.env.REACT_APP_API_IMAGE_URL}/products/${val.thumbnail}`} 
+                                    src={`${val.thumbnail}`} 
                                     className="thumbnail-image"
-                                    data-fullimage={`${process.env.REACT_APP_API_IMAGE_URL}/products/${val.thumbnail}`}
+                                    data-fullimage={`${val.thumbnail}`}
                                     alt="Product" 
                                     height={50} 
                                   />
@@ -814,6 +828,53 @@ const Product = () => {
                     />
                     {errors.price && <div className="invalid-feedback">{errors.price}</div>}
                   </div>
+
+{/* In add form */}
+<div className="form-group col-lg-4">
+  <label>Product Type *</label>
+  <select
+    className={`form-control ${errors.product_type ? 'is-invalid' : ''}`}
+    name="product_type"
+    value={formData.product_type}
+    onChange={handleInputChange}
+    required
+  >
+    <option value="regular">Regular</option>
+    <option value="subscription">Subscription</option>
+  </select>
+  {errors.product_type && <div className="invalid-feedback">{errors.product_type}</div>}
+</div>
+
+<div className="form-group col-lg-4">
+  <label>Sale Price</label>
+  <input
+    type="number"
+    className={`form-control ${errors.sale_price ? 'is-invalid' : ''}`}
+    name="sale_price"
+    value={formData.sale_price}
+    onChange={handleInputChange}
+    min="0"
+    step="0.01"
+  />
+  {errors.sale_price && <div className="invalid-feedback">{errors.sale_price}</div>}
+</div>
+
+<div className="form-group col-lg-4">
+  <label>Discount (%)</label>
+  <input
+    type="number"
+    className={`form-control ${errors.discount ? 'is-invalid' : ''}`}
+    name="discount"
+    value={formData.discount}
+    onChange={handleInputChange}
+    min="0"
+    max="100"
+    step="0.01"
+  />
+  {errors.discount && <div className="invalid-feedback">{errors.discount}</div>}
+</div>
+
+{/* Similarly add edit fields in the edit form */}
 
                   <div className="form-group col-lg-4">
                     <label>GST Rate (%) *</label>
@@ -1070,6 +1131,21 @@ const Product = () => {
                       multiple
                     />
                     {errors.edit_images && <div className="invalid-feedback">{errors.edit_images}</div>}
+                  </div>
+                  <div className="form-group col-12">
+                    <label>Existing Images</label>
+                    <div className="d-flex flex-wrap">
+                      {data.find(p => p._id === formData.data_id)?.images?.map((img, i) => (
+                        <img 
+                          key={i}
+                          src={img} 
+                          className="thumbnail-image mr-2 mb-2"
+                          data-fullimage={img}
+                          alt="Product" 
+                          height={50} 
+                        />
+                      ))}
+                    </div>
                   </div>
 
                   <div className="form-group col-lg-4">

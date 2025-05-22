@@ -407,9 +407,9 @@ const SubCategory = () => {
                             <td>{index + 1}</td>
                             <td>
                               <img 
-                                src={`${process.env.REACT_APP_API_IMAGE_URL}/subcategories/${val.image_url}`} 
+                                src={`${val.image_url}`} 
                                 className="thumbnail-image"
-                                data-fullimage={`${process.env.REACT_APP_API_IMAGE_URL}/subcategories/${val.image_url}`}
+                                data-fullimage={`${val.image_url}`}
                                 alt="Category" 
                                 height={50} 
                               />
@@ -462,7 +462,7 @@ const SubCategory = () => {
                                       data-category={val.category}
                                       data-name={val.name}
                                       data-status={val.status}
-                                      data-image={`${process.env.REACT_APP_API_IMAGE_URL}/subcategories/${val.image_url}`}
+                                      data-image={`${val.image_url}`}
                                     
 
                                       ><i className="far fa-edit"></i> Edit</a>

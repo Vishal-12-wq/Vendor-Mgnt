@@ -341,16 +341,16 @@ const Vendor = () => {
 
     // Set preview images if they exist
     if (vendor.logo) {
-      setPreviewLogo(`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${vendor.logo}`);
+      setPreviewLogo(`${vendor.logo}`);
     }
     if (vendor.signature) {
-      setPreviewSignature(`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${vendor.signature}`);
+      setPreviewSignature(`${vendor.signature}`);
     }
     if (vendor.fssai_certificate) {
-      setPreviewFssaiCertificate(`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${vendor.fssai_certificate}`);
+      setPreviewFssaiCertificate(`${vendor.fssai_certificate}`);
     }
     if (vendor.organic_certificate) {
-      setPreviewOrganicCertificate(`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${vendor.organic_certificate}`);
+      setPreviewOrganicCertificate(`${vendor.organic_certificate}`);
     }
 
     window.$('.editmodal').modal('show');
@@ -545,9 +545,9 @@ const Vendor = () => {
                                 <td>
                                   {val.logo && (
                                     <img 
-                                      src={`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${val.logo}`} 
+                                      src={`${val.logo}`} 
                                       className="thumbnail-image"
-                                      data-fullimage={`${process.env.REACT_APP_API_IMAGE_URL}/vendors/${val.logo}`}
+                                      data-fullimage={`${val.logo}`}
                                       alt="Vendor Logo" 
                                       height={50} 
                                     />

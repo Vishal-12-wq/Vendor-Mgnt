@@ -1,10 +1,33 @@
 const Category = require("../models/Category");
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
+const bucket = require("../gcs"); // adjust path as needed
 
 // Create Category
 exports.createCategory = async (req, res) => {
   try {
     const { name, status } = req.body;
-    const image_url = req.file ? req.file.filename : '';
+    let image_url = "";
+
+    if (req.file) {
+      const localPath = req.file.path;
+      const ext = path.extname(req.file.originalname);
+      const gcsFileName = `categories/${uuidv4()}${ext}`;
+      const file = bucket.file(gcsFileName);
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      image_url = `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
+      fs.unlinkSync(localPath); // delete local file after upload
+    }
 
     const category = new Category({ image_url, name, status });
     await category.save();
@@ -49,7 +72,26 @@ exports.getCategoryById = async (req, res) => {
 exports.updateCategory = async (req, res) => {
   try {
     const { name, status } = req.body;
-    const image_url = req.file ? req.file.filename : null;
+    let image_url = "";
+
+    if (req.file) {
+      const localPath = req.file.path;
+      const ext = path.extname(req.file.originalname);
+      const gcsFileName = `categories/${uuidv4()}${ext}`;
+      const file = bucket.file(gcsFileName);
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      image_url = `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
+      fs.unlinkSync(localPath); // delete local file after upload
+    }
 
     const updateData = { name, status };
     if (image_url) updateData.image_url = image_url;

@@ -1,10 +1,32 @@
 const Banner = require("../models/Banner");
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
+const bucket = require("../gcs"); // adjust path as needed
 
-// Create Banner
 exports.createBanner = async (req, res) => {
   try {
     const { title, sub_title, status } = req.body;
-    const image_url = req.file ? req.file.filename : '';
+    let image_url = "";
+
+    if (req.file) {
+      const localPath = req.file.path;
+      const ext = path.extname(req.file.originalname);
+      const gcsFileName = `banner/${uuidv4()}${ext}`;
+      const file = bucket.file(gcsFileName);
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      image_url = `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
+      fs.unlinkSync(localPath); // delete local file after upload
+    }
 
     const banner = new Banner({ image_url, title, sub_title, status });
     await banner.save();
@@ -21,6 +43,7 @@ exports.createBanner = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Get All Banners
 exports.getAllBanners = async (req, res) => {
@@ -45,11 +68,29 @@ exports.getBannerById = async (req, res) => {
   }
 };
 
-// Update Banner
 exports.updateBanner = async (req, res) => {
   try {
     const { title, sub_title, status } = req.body;
-    const image_url = req.file ? req.file.filename : null;
+    let image_url = null;
+
+    if (req.file) {
+      const localPath = req.file.path;
+      const ext = path.extname(req.file.originalname);
+      const gcsFileName = `banner/${uuidv4()}${ext}`;
+      const file = bucket.file(gcsFileName);
+
+      await bucket.upload(localPath, {
+        destination: gcsFileName,
+        resumable: false,
+        public: true,
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      image_url = `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
+      fs.unlinkSync(localPath); // delete local file after upload
+    }
 
     const updateData = { title, sub_title, status };
     if (image_url) updateData.image_url = image_url;
@@ -62,9 +103,17 @@ exports.updateBanner = async (req, res) => {
 
     res.status(200).json({ success: true, data: banner });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      const errors = {};
+      for (const field in error.errors) {
+        errors[field] = error.errors[field].message;
+      }
+      return res.status(400).json({ success: false, errors });
+    }
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Delete Single Banner
 exports.deleteBanner = async (req, res) => {
