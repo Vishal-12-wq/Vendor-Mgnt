@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['0', '1'],
-    default: '1' // 0 = Unverified, 1 = Verified
+    default: '0' // 0 = Unverified, 1 = Verified
   }
 }, {
   timestamps: true
