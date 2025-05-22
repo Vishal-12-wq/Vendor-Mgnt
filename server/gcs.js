@@ -1,11 +1,10 @@
-// gcs.js
 const { Storage } = require('@google-cloud/storage');
-const path = require('path');
 
-// Load service account key
+const serviceAccount = JSON.parse(process.env.GCLOUD_SERVICE_KEY);
+
 const storage = new Storage({
-  keyFilename: path.join(__dirname, 'vendor-image-upload-7e6ed61045e5.json'),
-  projectId: 'vendor-image-upload',
+  projectId: serviceAccount.project_id,
+  credentials: serviceAccount,
 });
 
 const bucket = storage.bucket('vendors-images');
