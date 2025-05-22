@@ -101,7 +101,7 @@ exports.getCart = async (req, res) => {
     const cart = await Cart.findOne({ user: userId })
       .populate({
         path: 'items.product',
-        select: 'name images price quantity status order_type',
+        select: 'name thumbnail price quantity status order_type',
         match: { status: '1' } // Only populate active products
       });
 
