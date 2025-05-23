@@ -13,9 +13,7 @@ const OrderHistory = () => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get('/order');
-      if (response.data.status) {
         setOrders(response.data.orders);
-      }
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
