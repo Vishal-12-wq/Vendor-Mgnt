@@ -77,6 +77,7 @@ exports.verifyRegistrationOtp = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const { phone, name, email,adminvalue } = req.body;
+    let user; // Declare user here to use it in both branches
 
     if(adminvalue == 'admin')
     {
@@ -85,7 +86,7 @@ exports.createUser = async (req, res) => {
     }
     else
     {
-      const user = await User.findOne({ phone });
+      user = await User.findOne({ phone });
 
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found or OTP not verified." });
