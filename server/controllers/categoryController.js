@@ -173,3 +173,34 @@ exports.changeStatus = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+
+exports.getAllCategoriesSubCategory = async (req, res) => {
+  try {
+    // First get all categories
+    const categories = await Category.find();
+    
+    // Then get all subcategories
+    const subcategories = await SubCategory.find();
+    
+    // Create a map to group subcategories by their category name
+    const subcategoriesByCategory = subcategories.reduce((acc, subcategory) => {
+      if (!acc[subcategory.category]) {
+        acc[subcategory.category] = [];
+      }
+      acc[subcategory.category].push(subcategory);
+      return acc;
+    }, {});
+    
+    // Combine categories with their subcategories
+    const result = categories.map(category => ({
+      ...category.toObject(),
+      subcategories: subcategoriesByCategory[category.name] || []
+    }));
+    
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -25,11 +25,15 @@ const {
   deleteCategory,
   bulkDeleteCategories,
   changeStatus,
+  getAllCategoriesSubCategory
 } = require("../controllers/categoryController");
 
 // Routes
 router.post("/", upload.single("image_url"), createCategory);
 router.get("/", getAllCategories);
+
+router.get("/subcategory", getAllCategoriesSubCategory);
+
 router.get("/:id", getCategoryById);
 router.put("/:id/status", changeStatus); // Update only the status
 router.put("/:id", upload.single("image_url"), updateCategory);
