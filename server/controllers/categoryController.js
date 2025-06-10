@@ -184,11 +184,11 @@ exports.getAllCategoriesWithSubcategories = async (req, res) => {
 
     const categoriesWithSubcategories = await Promise.all(
       categories.map(async (category) => {
-        const subcategories = await SubCategory.find({ category: category._id }).lean(); // Match by name (or _id if using ref)
+      const subcategories = await SubCategory.find({ category: category._id }).lean();
 
         return {
           ...category,
-          subcategories: subcategories || [], // Attach subcategories
+          subcategories: subcategories, // Attach subcategories
         };
       })
     );
