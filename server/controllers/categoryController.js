@@ -178,28 +178,22 @@ exports.changeStatus = async (req, res) => {
 
 
 
-exports.getAllCategoriesSubCategory = async (req, res) => {
+exports.getAllCategoriesWithSubcategories = async (req, res) => {
   try {
-    const [categories, subCategories] = await Promise.all([
-      Category.find({}).lean(),
-      SubCategory.find({}).lean(),
-    ]);
+    const categories = await Category.find({}).lean();
 
-    // Group subcategories by category name (case-insensitive + trimmed)
-    const subCategoriesByCategory = subCategories.reduce((acc, subCat) => {
-      const categoryName = subCat.category.trim().toLowerCase();
-      if (!acc[categoryName]) acc[categoryName] = [];
-      acc[categoryName].push(subCat);
-      return acc;
-    }, {});
+    const categoriesWithSubcategories = await Promise.all(
+      categories.map(async (category) => {
+        const subcategories = await SubCategory.find({ category: category._id }).lean(); // Match by name (or _id if using ref)
 
-    // Map categories with their subcategories
-    const result = categories.map(category => ({
-      ...category,
-      subcategories: subCategoriesByCategory[category.name.trim().toLowerCase()] || [],
-    }));
+        return {
+          ...category,
+          subcategories: subcategories || [], // Attach subcategories
+        };
+      })
+    );
 
-    res.status(200).json({ success: true, data: result });
+    res.status(200).json({ success: true, data: categoriesWithSubcategories });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
