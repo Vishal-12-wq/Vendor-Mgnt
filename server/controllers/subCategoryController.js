@@ -184,14 +184,19 @@ exports.changeSubCategoryStatus = async (req, res) => {
 exports.getSubCategoryByCategoryId = async (req, res) => {
   try {
     const categoryId = req.params.id;
+    const limit = parseInt(req.query.limit); // get limit from query string
 
     if (!categoryId) {
       return res.status(400).json({ message: "Category ID is required" });
     }
 
-    const subcategories = await SubCategory.find({
-      category: categoryId,
-    });
+    const query = SubCategory.find({ category: categoryId }).sort({ createdAt: -1 }); // latest first
+
+    if (!isNaN(limit) && limit > 0) {
+      query.limit(limit);
+    }
+
+    const subcategories = await query.exec();
 
     res.json({ success: true, data: subcategories });
   } catch (error) {
@@ -199,4 +204,5 @@ exports.getSubCategoryByCategoryId = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
