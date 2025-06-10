@@ -178,17 +178,26 @@ exports.changeStatus = async (req, res) => {
 
 exports.getAllCategoriesSubCategory = async (req, res) => {
   try {
-    const result = await Category.aggregate([
-      {
-        $lookup: {
-          from: "subcategories", // collection name (usually lowercase plural)
-          localField: "name",    // field in Category model
-          foreignField: "category", // field in SubCategory model
-          as: "subcategories"   // output array field
-        }
-      }
+    // Fetch categories and subcategories in parallel
+    const [categories, subCategories] = await Promise.all([
+      Category.find({}).lean(),
+      SubCategory.find({}).lean(),
     ]);
-    
+
+    // Group subcategories by category name
+    const subCategoriesByCategory = subCategories.reduce((acc, subCat) => {
+      const categoryName = subCat.category;
+      if (!acc[categoryName]) acc[categoryName] = [];
+      acc[categoryName].push(subCat);
+      return acc;
+    }, {});
+
+    // Combine results
+    const result = categories.map(category => ({
+      ...category,
+      subcategories: subCategoriesByCategory[category.name] || [],
+    }));
+
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
